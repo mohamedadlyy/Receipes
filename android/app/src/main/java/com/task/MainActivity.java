@@ -15,7 +15,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "eshraqh";
+    return "task";
   }
   @Override
   protected ReactActivityDelegate createReactActivityDelegate() {

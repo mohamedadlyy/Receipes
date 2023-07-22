@@ -7,7 +7,5 @@
           <item name="android:forceDarkAllowed">false</item>
 
     </style>
-  <style name="SpinnerItem" parent="Theme.AppCompat.Light.NoActionBar">
-     <item name="android:fontFamily">Cairo-Regular</item>
-    </style>
+
 </resources>

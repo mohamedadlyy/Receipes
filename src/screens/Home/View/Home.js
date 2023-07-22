@@ -40,7 +40,7 @@ export default class Home extends Component {
 
 
     async GetItemList(from, to, SearchTxt, filterOption) {
-      
+
         this.setState({ Loading: true, from, to })
         let url = ''
         if (filterOption) {
@@ -48,7 +48,7 @@ export default class Home extends Component {
         } else {
             url = `https://api.edamam.com/search?q=${SearchTxt}&app_id=a79682ea&app_key=5384dabbea00f6143974e7090afabd02&from=${from}&to=${to}`
         }
-        axios.get(url, { signal: signal})
+        axios.get(url, { signal: signal })
             .then((response) => {
                 this.setState({ Loading: false, })
 
@@ -109,9 +109,9 @@ export default class Home extends Component {
     render() {
 
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1,backgroundColor:White }}>
 
-                <Container>
+                <Container style={{backgroundColor:White}}>
                     <View style={styles.header}>
                         <Text style={styles.title}>Recipes Search</Text>
                     </View>
@@ -125,7 +125,7 @@ export default class Home extends Component {
                         />
                     </View>
 
-                    <View style={{ paddingHorizontal: "5%" }}>
+                    <View style={{paddingHorizontal:"5%",backgroundColor:'#fff'}}>
 
                         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ maxHeight: screenHeight / 12, marginVertical: '2%', }}>
                             <Button onPress={() => { this.HandleFilter(null) }} style={this.state.filterOption == null ? styles.activeBtn : styles.inactiveBtn}>
@@ -153,9 +153,12 @@ export default class Home extends Component {
                         {this.state.Loading &&
                             <Loading />
                         }
-                        <View style={{ width: "100%", marginTop: "2%" }}>
+                        <View style={{ width: "100%", marginVertical: "2%" }}>
 
                             <FlatList
+                            showsVerticalScrollIndicator={false}
+                                ListFooterComponent={<View />}
+                                ListFooterComponentStyle={{ height: 200 }}
                                 ref={(ref) => { this.flatListRef = ref; }}
                                 onEndReached={this.onEndReached.bind(this)}
                                 onEndReachedThreshold={0.5}
@@ -165,7 +168,7 @@ export default class Home extends Component {
                                 extraData={this.state}
                                 renderItem={({ item, index }) => {
                                     return (
-                                        <ItemView key={index} item={item} navigation={()=>this.props.navigation.navigate("RecipesDetails",{item:item})}/>
+                                        <ItemView key={index} item={item} navigation={() => this.props.navigation.navigate("RecipesDetails", { item: item })} />
                                     )
                                 }}
 
@@ -210,7 +213,7 @@ const styles = StyleSheet.create({
         textAlign: I18nManager.isRTL ? 'right' : 'left', color: DarkGrey, width: '100%',
         fontSize: screenWidth / 30, alignSelf: 'center'
     },
-    container: { width: "95%", alignSelf: 'center', flexDirection: "column" },
+    container: { width: "95%", alignSelf: 'center', flexDirection: "column",backgroundColor:'#fff' },
     inactiveBtn: {
         width: screenWidth / 3, height: 50, alignSelf: 'center', marginVertical: "2%", justifyContent: "center", marginEnd: 10, backgroundColor: backgroundColor, borderRadius: 5, borderColor: grey, borderWidth: 0.5
     },
