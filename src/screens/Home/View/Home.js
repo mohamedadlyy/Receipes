@@ -7,7 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import ItemView from '../../../components/ItemView';
 import axios from 'axios';
-
+const controller = new AbortController();
+const signal = controller.signal;
 export default class Home extends Component {
 
     constructor(props) {
@@ -39,6 +40,7 @@ export default class Home extends Component {
 
 
     async GetItemList(from, to, SearchTxt, filterOption) {
+      
         this.setState({ Loading: true, from, to })
         let url = ''
         if (filterOption) {
@@ -46,7 +48,7 @@ export default class Home extends Component {
         } else {
             url = `https://api.edamam.com/search?q=${SearchTxt}&app_id=a79682ea&app_key=5384dabbea00f6143974e7090afabd02&from=${from}&to=${to}`
         }
-        axios.get(url)
+        axios.get(url, { signal: signal})
             .then((response) => {
                 this.setState({ Loading: false, })
 
@@ -93,6 +95,7 @@ export default class Home extends Component {
     }
 
     handleInput(text) {
+        controller.abort();
         this.flatListRef.scrollToOffset({ animated: true, offset: 0 });
         this.setState({ SearchTxt: text, ItemList: [] }, () =>
             setTimeout(() => {

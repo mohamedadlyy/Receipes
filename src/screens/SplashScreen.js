@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { I18nManager,  View, Text } from "react-native";
-
-import AsyncStorage from "@react-native-community/async-storage";
+import {  View, Text } from "react-native";
 import { Container } from 'native-base';
-
 
 export default class SplashScreen extends Component {
   constructor(props) {
@@ -19,21 +16,6 @@ export default class SplashScreen extends Component {
   }
 
 
-  // LoadInitialState = async () => {
-  //   let lan = await AsyncStorage.getItem('lan')
-  //   if (lan != null) {
-  //       this.props.navigation.navigate('Home')
-  //   } else {
-  //     AsyncStorage.setItem('lan', 'en')
-  //     I18nManager.forceRTL(false);
-  //     I18nManager.allowRTL(false);
-  //     RNRestart.Restart();
-  //       this.props.navigation.navigate('Home')
-
-  //   }
-
-
-  // }
 
   render() {
     return (
