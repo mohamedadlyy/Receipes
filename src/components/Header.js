@@ -16,28 +16,34 @@ const Header = (props) => (
         <View style={styles.txtView}>
             <Text style={styles.title}>{props.title}</Text>
         </View>
+
+        <Button onPress={()=>props.navigation.navigate("Cart")} transparent style={styles.btn}>
+        <Image style={styles.cartImage}source={require('../images/cart.png')}/>
+    </Button>
     </View>
 )
 
 const styles = StyleSheet.create({
     container: {
-        width: "100%", flexDirection: "row", justifyContent: 'flex-start',
-        alignSelf: 'center', height: screenHeight / 9, backgroundColor: White
+        width: "100%", flexDirection: "row", justifyContent: 'space-between',
+        alignSelf: 'center', height: screenHeight / 9, backgroundColor: White,paddingHorizontal:"5%",alignContent:"center",alignItems:"center"
     },
-    btnView:{width: "25%", alignSelf: 'center' },
+    btnView:{ alignSelf: 'center',justifyContent:"center",marginTop:"1%" },
     btn: {
-        alignSelf: "flex-start", width: 30, height: 30, justifyContent: "center", marginLeft: '3%'
+        alignSelf: "center", width: 30, height: 30, justifyContent: "center"
     },
     img: {
-        width: "90%", height: "90%", resizeMode: "contain", alignSelf: "center", tintColor: black
+        width: 15, height:15, resizeMode: "contain", alignSelf: "center", tintColor: black
 
     },
     txtView: {
-        width: "50%", alignSelf: 'center', justifyContent: 'center'
+         alignSelf: 'center', justifyContent: 'center'
     },
     title: {
-        color: black, textAlign: 'center'
+        color: black, textAlign: 'center',textAlignVertical:"center"
     },
+    btn:{width:20,height:20,alignSelf:'center',justifyContent:"center"},
+    cartImage:{width:20,height:20,alignSelf:"center",resizeMode:"contain"}
 });
 export default Header;
 

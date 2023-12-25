@@ -1,28 +1,19 @@
 import React, { Component } from 'react';
-import { Image, View, Text, StyleSheet, BackHandler, I18nManager, FlatList } from "react-native";
-import { screenWidth, grey, AppColor, DarkGrey, backgroundColor, borderColor, screenHeight, WhiteBlue, Red, White } from "../../../components/Styles";
-import { Button, Container, Input, Toast } from 'native-base';
-import Loading from '../../../components/Loading'
+import { View, Text, StyleSheet, BackHandler, I18nManager, FlatList, Image } from "react-native";
+import { screenWidth, grey, AppColor, DarkGrey, backgroundColor, borderColor, WhiteBlue, White } from "../../../components/Styles";
+import { Container, } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
 import ItemView from '../../../components/ItemView';
-import axios from 'axios';
-const controller = new AbortController();
-const signal = controller.signal;
+import HomeHeader from '../../../components/HomeHeader';
+const Products = require('../../../data/Product.json');
 export default class Home extends Component {
 
     constructor(props) {
         super(props)
-        this.onEndReachedCalledDuringMomentum = true;
         this.state = {
             Loading: false,
             refreshing: false,
-            SearchTxt: '',
             ItemList: [],
-            from: 0,
-            to: 10,
-            more: true,
-            filterOption: null
         }
     }
 
@@ -38,137 +29,44 @@ export default class Home extends Component {
     }
 
 
-
-    async GetItemList(from, to, SearchTxt, filterOption) {
-
-        this.setState({ Loading: true, from, to })
-        let url = ''
-        if (filterOption) {
-            url = `https://api.edamam.com/search?q=${SearchTxt}&app_id=a79682ea&app_key=5384dabbea00f6143974e7090afabd02&health=${filterOption}&from=${from}&to=${to}`
-        } else {
-            url = `https://api.edamam.com/search?q=${SearchTxt}&app_id=a79682ea&app_key=5384dabbea00f6143974e7090afabd02&from=${from}&to=${to}`
-        }
-        axios.get(url, { signal: signal })
-            .then((response) => {
-                this.setState({ Loading: false, })
-
-                let Data = response.data
-                if (response.status == '200') {
-                    this.setState({
-                        Loading: false,
-                        ItemList: to > 10 ? [...this.state.ItemList, ...Data.hits] : Data.hits,
-                        more: Data.more
-                    })
-
-                } else {
-                    this.setState({ Loading: false, })
-                    Toast.show({
-                        position: "top", type: "success",
-                        text: 'Some Thing went wrong', textStyle: { color: White, textAlign: 'center', },
-                        duration: 3000,
-                        style: { backgroundColor: Red, width: "60%", alignSelf: "center", borderRadius: 10 }
-                    })
-                }
-            });
-
+    componentDidMount() {
+        this.getProductList()
     }
 
-
-
-
-    HandleFilter(FilterOption) {
-        this.flatListRef.scrollToOffset({ animated: true, offset: 0 });
-        this.setState({ filterOption: FilterOption, ItemList: [] }),
-            this.setState({ filterOption: FilterOption }, () =>
-                this.GetItemList(0, 10, this.state.SearchTxt, FilterOption)
-            );
-
+    getProductList() {
+        this.setState({ ItemList: Products })
     }
 
-    onEndReached = ({ }) => {
-        if (!this.onEndReachedCalledDuringMomentum) {
-            if (this.state.more) {
-                this.GetItemList(+this.state.from + 10, +this.state.to + 10, this.state.SearchTxt, this.state.filterOption)
-            }
-            this.onEndReachedCalledDuringMomentum = true;
-        }
+    onRefresh() {
+        this.getProductList()
     }
-
-    handleInput(text) {
-        controller.abort();
-        this.flatListRef.scrollToOffset({ animated: true, offset: 0 });
-        this.setState({ SearchTxt: text, ItemList: [] }, () =>
-            setTimeout(() => {
-                this.GetItemList(0, 10, this.state.SearchTxt, null)
-            }, 1000));
-
-    }
-
-
 
     render() {
 
         return (
-            <SafeAreaView style={{ flex: 1,backgroundColor:White }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: White }}>
 
-                <Container style={{backgroundColor:White}}>
-                    <View style={styles.header}>
-                        <Text style={styles.title}>Recipes Search</Text>
-                    </View>
-                    <View style={styles.input} >
-                        <View style={styles.searchContainer}>
-                            <Image source={require("../../../images/s.png")} style={{ alignSelf: "center", resizeMode: "contain", width: 25, height: 25, tintColor: White }} />
-                        </View>
-                        <Input value={this.state.SearchTxt} onChangeText={(text) => this.handleInput(text)}
-                            placeholderTextColor={grey} placeholder={'Search'}
-                            style={styles.inputText}
-                        />
-                    </View>
+                <Container style={{ backgroundColor: White }}>
 
-                    <View style={{paddingHorizontal:"5%",backgroundColor:'#fff'}}>
-
-                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ maxHeight: screenHeight / 12, marginVertical: '2%', }}>
-                            <Button onPress={() => { this.HandleFilter(null) }} style={this.state.filterOption == null ? styles.activeBtn : styles.inactiveBtn}>
-                                <Text style={{ alignSelf: "center" }}>All</Text>
-                            </Button>
-
-                            <Button onPress={() => this.HandleFilter('low-sugar')} style={this.state.filterOption == 'low-sugar' ? styles.activeBtn : styles.inactiveBtn}>
-                                <Text style={{ alignSelf: "center" }}>Low Sugar</Text>
-                            </Button>
-
-                            <Button onPress={() => this.HandleFilter('keto-friendly')} style={this.state.filterOption == 'keto-friendly' ? styles.activeBtn : styles.inactiveBtn}>
-                                <Text style={{ alignSelf: "center" }}>Keto</Text>
-                            </Button>
-
-                            <Button onPress={() => this.HandleFilter('Vegan')} style={this.state.filterOption == 'Vegan' ? styles.activeBtn : styles.inactiveBtn}>
-                                <Text style={{ alignSelf: "center" }}>Vegan</Text>
-                            </Button>
-                        </ScrollView>
-
-                    </View>
+                    <HomeHeader navigation={this.props.navigation} title={'Product List'} />
 
 
 
                     <View style={styles.container}>
-                        {this.state.Loading &&
-                            <Loading />
-                        }
                         <View style={{ width: "100%", marginVertical: "2%" }}>
-
                             <FlatList
-                            showsVerticalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
                                 ListFooterComponent={<View />}
-                                ListFooterComponentStyle={{ height: 200 }}
+                                ListFooterComponentStyle={{ height: 100 }}
                                 ref={(ref) => { this.flatListRef = ref; }}
-                                onEndReached={this.onEndReached.bind(this)}
-                                onEndReachedThreshold={0.5}
-                                onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
                                 keyExtractor={(item, index) => index.toString()}
                                 data={this.state.ItemList}
                                 extraData={this.state}
+                                onRefresh={() => this.onRefresh()}
+                                refreshing={this.state.refreshing}
                                 renderItem={({ item, index }) => {
                                     return (
-                                        <ItemView key={index} item={item} navigation={() => this.props.navigation.navigate("RecipesDetails", { item: item })} />
+                                        <ItemView key={index} item={item} navigation={() => this.props.navigation.navigate("ProductDetails", { item: item })} />
                                     )
                                 }}
 
@@ -195,7 +93,7 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
     header: {
-        width: "95%", flexDirection: "row", justifyContent: "flex-start", height: 60, alignContent: 'center',
+        width: "95%", flexDirection: "row", justifyContent: "space-between", height: 60, alignContent: 'center',
         alignItems: 'center', paddingHorizontal: "5%",
     },
     title: {
@@ -213,7 +111,7 @@ const styles = StyleSheet.create({
         textAlign: I18nManager.isRTL ? 'right' : 'left', color: DarkGrey, width: '100%',
         fontSize: screenWidth / 30, alignSelf: 'center'
     },
-    container: { width: "95%", alignSelf: 'center', flexDirection: "column",backgroundColor:'#fff' },
+    container: { width: "95%", alignSelf: 'center', flexDirection: "column", backgroundColor: '#fff' },
     inactiveBtn: {
         width: screenWidth / 3, height: 50, alignSelf: 'center', marginVertical: "2%", justifyContent: "center", marginEnd: 10, backgroundColor: backgroundColor, borderRadius: 5, borderColor: grey, borderWidth: 0.5
     },
